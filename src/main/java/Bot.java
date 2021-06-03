@@ -10,6 +10,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void onUpdateReceived(Update update) {
+        Model model = new Model();
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
             switch (message.getText()) {
@@ -50,6 +52,11 @@ public class Bot extends TelegramLongPollingBot {
                     sendMsg(message, "Что будем настраивать?");
                     break;
                 default:
+                    try {
+                        sendMsg(message, Weather.getWeather(message.getText(), model));
+                    } catch (IOException ex) {
+                        sendMsg(message, "Такой город не найден!");
+                    }
             }
         }
     }
