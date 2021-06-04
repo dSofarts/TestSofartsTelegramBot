@@ -7,6 +7,8 @@ import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.exceptions.TelegramApiException;
+import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ public class Bot extends TelegramLongPollingBot {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new Bot());
-        } catch (Exception ex) {
+        } catch (TelegramApiRequestException ex) {
             ex.printStackTrace();
         }
     }
@@ -33,7 +35,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             setButton(sendMessage);
             sendMessage(sendMessage);
-        } catch (Exception ex) {
+        } catch (TelegramApiException ex) {
             ex.printStackTrace();
         }
     }
@@ -43,17 +45,17 @@ public class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
             switch (message.getText()) {
-                case "/help":
-                    sendMsg(message, "Чем могу помочь?");
+                case "Помощь":
+                    sendMsg(message, "Для того, чтобы получить погоду по вашему городу, введите его этому Боту");
                     break;
-                case "/setting":
-                    sendMsg(message, "Что будем настраивать?");
+                case "Что делать если мой город не найден?":
+                    sendMsg(message, "Если Ваш город не найден - уточните правильно ли вы водите егт название либо попробуйте ввести его на английском язвке!");
                     break;
                 default:
                     try {
                         sendMsg(message, Weather.getWeather(message.getText(), model));
                     } catch (Exception e) {
-                        sendMsg(message, "Такой город не найден!");
+                        sendMsg(message, "Такой город не найден! Либо команда не распознана! Попробуйте снова!");
                     }
             }
         }
@@ -73,8 +75,8 @@ public class Bot extends TelegramLongPollingBot {
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
 
-        keyboardFirstRow.add(new KeyboardButton("/help"));
-        keyboardFirstRow.add(new KeyboardButton("/setting"));
+        keyboardFirstRow.add(new KeyboardButton("Помощь"));
+        keyboardFirstRow.add(new KeyboardButton("Что делать если мой город не найден?"));
 
         keyboardRowList.add(keyboardFirstRow);
         replyKeyboardMarkup.setKeyboard(keyboardRowList);

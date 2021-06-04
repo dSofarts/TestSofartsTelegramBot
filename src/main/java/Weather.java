@@ -1,3 +1,6 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -14,6 +17,22 @@ public class Weather {
             result += scanner.nextLine();
         }
 
-        return result;
+        JSONObject object = new JSONObject(result);
+        model.setName(object.getString("name"));
+        JSONObject main = object.getJSONObject("main");
+        model.setTemp(main.getDouble("temp"));
+        model.setHumidity(main.getDouble("humidity"));
+
+        JSONArray getArray = object.getJSONArray("weather");
+        for (int index = 0; index < getArray.length(); index++) {
+            JSONObject weatherObj = getArray.getJSONObject(index);
+            model.setIcon((String) weatherObj.get("icon"));
+            model.setMain((String) weatherObj.get("main"));
+        }
+
+        return "Город: " + model.getName() + "\nТемпература: "
+                + model.getTemp() + " C\nПогода: "
+                + model.getMain() + "\nВлажность: "
+                + model.getHumidity() + " %";
     }
 }
