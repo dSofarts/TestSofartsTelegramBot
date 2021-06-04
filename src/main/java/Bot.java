@@ -45,8 +45,11 @@ public class Bot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
             switch (message.getText()) {
+                case "/start":
+                    sendMsg(message, "Добро пожаловать! Чтобы узнать погоду по городу просто введите его Мне!");
+                    break;
                 case "Помощь":
-                    sendMsg(message, "Для того, чтобы получить погоду по вашему городу, введите его этому Боту");
+                    sendMsg(message, "Чтобы узнать погоду по городу просто введите его Мне!");
                     break;
                 case "Что делать если мой город не найден?":
                     sendMsg(message, "Если Ваш город не найден - уточните правильно ли вы водите егт название либо попробуйте ввести его на английском язвке!");
